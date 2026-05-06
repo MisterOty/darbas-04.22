@@ -5,6 +5,7 @@ body{
 }
 
 main{
+    margin-top: 50px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -21,4 +22,18 @@ main{
 
 .isCompleted{
     border: gold 5px solid;
+}
+
+.searchBar{
+    display: flex;
+    width: 250px;
+    height: 30px;
+    position: fixed;
+    margin-top: -40px;
+    margin-left: 300px;
+    gap: 5px;
+}
+
+#limit{
+    width: 50px;
 }

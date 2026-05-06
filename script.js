@@ -1,15 +1,8 @@
-async function getPost(){
-    let response = await fetch('https://jsonplaceholder.typicode.com/todos/1')
-    response = await response.json()
-    console.log(response.userId, response.id, response.title, response.completed)
-}
-
 async function getPosts() {
     let response = await fetch('https://jsonplaceholder.typicode.com/posts')
     response = await response.json();
     return response;
 }
-
 async function getUsers() {
     let response = await fetch('https://jsonplaceholder.typicode.com/users')
     response = await response.json();
@@ -21,19 +14,40 @@ function getUserByID(users, id) {
 }
 
 window.onload = async() => {
-    const posts = await getPosts()
-    const users = await getUsers()
-    for(let i = 0; i < posts.length; i++){
-        let user = getUserByID(users, posts[i].userId)
-        document.querySelector('main').innerHTML += `
-        <div class="container num${i}">
-            <h3>(User: ${user.name})</h3>
-            <h1>${posts[i].title}</h1>
-        </div>`
-        if(posts[i].completed){
-            document.querySelector(`.num${i}`).classList.add(`isCompleted`)
-        }
+    const posts = await getPosts();
+    const users = await getUsers();
+
+    const postsElement = document.querySelector("main");
+    const searchByName = document.querySelector("#search")
+    const searchBtn = document.querySelector("#search-btn")
+    const limitInput = document.querySelector("#limit")
+
+    renderPosts(posts)
+
+    searchBtn.addEventListener('click', () => {
+        const filteredPosts = filterByName(searchByName.value)
+        renderPosts(filteredPosts)
+    })
+
+    function filterByName(query) {
+        return posts.filter((post) => post.title.includes(query))
     }
-    // let rng = Math.round(Math.random() * posts.length)
-    // console.log(posts[rng].userId, posts[rng].id, posts[rng].title, posts[rng].completed)
+
+    async function renderPosts(posts){
+            postsElement.innerHTML = '';
+            posts.slice(0, limitInput.value).forEach(post => {
+                const postelement = document.createElement('div');
+                postelement.classList.add('container');
+
+                const user = getUserByID(users, post.userId)
+
+                postelement.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.body}</p>
+                    <p>${user.name}</p>
+                `;
+                postsElement.append(postelement)
+            })
+    }
+
 }
